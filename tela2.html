@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Linhas de Ônibus</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="custom-body">
+  <div class="main-container">
+    <div class="left-panel">
+      <h1 class="header-title">Linhas de Ônibus</h1>
+      <div class="map-container">
+        <span class="map-label">SÃO LUÍS</span>
+        <img
+          class="map-image"
+          src="https://storage.googleapis.com/a1aa/image/2a536ea9-cc9d-4a4a-c1ce-0a5f7d54a92e.jpg"
+          alt="Mapa de linhas de ônibus de São Luís com rotas em vermelho e azul"
+          width="400"
+          height="180"
+        />
+        <div id="resultadoLinhas"></div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <input id="campoBusca" class="input" type="text" placeholder="Buscar linha" />
+      <input id="campoRegiao" class="input" type="text" placeholder="Região" />
+      <input id="campoTerminal" class="input" type="text" placeholder="Terminais" />
+      <button class="button" type="button" onclick="buscarLinhas()">Buscar</button>
+      <button class="button" type="button" onclick="limparFiltros()">Limpar Filtros</button>
+    </div>
+  </div>
+</body>
+</html>
