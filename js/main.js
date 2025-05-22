@@ -10,33 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-const linhasOnibus = [
-  {
-    codigo: 'T403',
-    descricao: 'Terminal Praia Grande - Calhau',
-    regiao: 'Praia Grande',
-    terminais: ['Praia Grande', 'Calhau']
-  },
-  {
-    codigo: 'T70',
-    descricao: 'Terminal São Cristóvão',
-    regiao: 'São Cristóvão',
-    terminais: ['São Cristóvão']
-  },
-  {
-    codigo: 'T051',
-    descricao: 'Terminal Cohama/Cohatrac',
-    regiao: 'Cohama',
-    terminais: ['Cohama', 'Cohatrac']
-  },
-  {
-    codigo: '402',
-    descricao: 'Cidade Operária - Terminal Praia Grande',
-    regiao: 'Cidade Operária',
-    terminais: ['Cidade Operária', 'Praia Grande']
-  }
-];
-
 function filtrarLinhas(buscaLinha, buscaRegiao, buscaTerminal) {
   return linhasOnibus.filter((linha) => {
     const matchLinha =
