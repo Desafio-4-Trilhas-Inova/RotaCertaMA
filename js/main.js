@@ -10,63 +10,97 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function buscarLinhas() {
-  const linha = document.getElementById('campoBusca').value.trim();
-  const regiao = document.getElementById('campoRegiao').value.trim();
-  const terminal = document.getElementById('campoTerminal').value.trim();
-
-  // Monta a query string com os parâmetros preenchidos
-  const params = new URLSearchParams();
-  if (linha) params.append('linha', linha);
-  if (regiao) params.append('regiao', regiao);
-  if (terminal) params.append('terminal', terminal);
-
-  fetch(`http://localhost:3000/api/linhas?${params.toString()}`)
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao buscar dados');
-      return response.json();
-    })
-    .then(data => {
-      renderizarLinhas(data);
-    })
-    .catch(error => {
-      console.error(error);
-      document.getElementById('resultadoLinhas').innerHTML = '<p>Erro ao buscar linhas.</p>';
-    });
-}
-
-// Renderiza os resultados dentro do <div id="resultadoLinhas">
-function renderizarLinhas(linhas) {
-  const container = document.getElementById('resultadoLinhas');
-  container.innerHTML = ''; // Limpa resultados anteriores
-
-  if (linhas.length === 0) {
-    container.innerHTML = '<p>Nenhuma linha encontrada com esses filtros.</p>';
-    return;
+const linhasOnibus = [
+  {
+    codigo: 'T403',
+    descricao: 'Terminal Praia Grande - Calhau',
+    regiao: 'Praia Grande',
+    terminais: ['Praia Grande', 'Calhau']
+  },
+  {
+    codigo: 'T70',
+    descricao: 'Terminal São Cristóvão',
+    regiao: 'São Cristóvão',
+    terminais: ['São Cristóvão']
+  },
+  {
+    codigo: 'T051',
+    descricao: 'Terminal Cohama/Cohatrac',
+    regiao: 'Cohama',
+    terminais: ['Cohama', 'Cohatrac']
+  },
+  {
+    codigo: '402',
+    descricao: 'Cidade Operária - Terminal Praia Grande',
+    regiao: 'Cidade Operária',
+    terminais: ['Cidade Operária', 'Praia Grande']
   }
+];
 
-  linhas.forEach(linha => {
-    const box = document.createElement('div');
-    box.classList.add('linha-box');
+function filtrarLinhas(buscaLinha, buscaRegiao, buscaTerminal) {
+  return linhasOnibus.filter((linha) => {
+    const matchLinha =
+      linha.codigo.toLowerCase().includes(buscaLinha.toLowerCase()) ||
+      linha.descricao.toLowerCase().includes(buscaLinha.toLowerCase());
 
-    const codigo = document.createElement('span');
-    codigo.classList.add('linha-codigo');
-    codigo.textContent = linha.codigo;
+    const matchRegiao =
+      !buscaRegiao || linha.regiao.toLowerCase().includes(buscaRegiao.toLowerCase());
 
-    const desc = document.createElement('span');
-    desc.classList.add('linha-desc');
-    desc.innerHTML = `<br>${linha.descricao}`;
+    const matchTerminal =
+      !buscaTerminal ||
+      linha.terminais.some((t) =>
+        t.toLowerCase().includes(buscaTerminal.toLowerCase())
+      );
 
-    box.appendChild(codigo);
-    box.appendChild(desc);
-    container.appendChild(box);
+    return matchLinha && matchRegiao && matchTerminal;
   });
 }
 
-// Função para limpar os filtros
-function limparFiltros() {
-  document.getElementById('campoBusca').value = '';
-  document.getElementById('campoRegiao').value = '';
-  document.getElementById('campoTerminal').value = '';
-  document.getElementById('resultadoLinhas').innerHTML = '';
+function renderizarLinhas(lista) {
+  const container = document.getElementById("lista-linhas");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (lista.length === 0) {
+    container.innerHTML = "<p style='color: white;'>Nenhuma linha encontrada.</p>";
+    return;
+  }
+
+  lista.forEach((linha) => {
+    const div = document.createElement("div");
+    div.classList.add("linha-box");
+
+    div.innerHTML = `
+      <p class="linha-codigo">${linha.codigo}</p>
+      <p class="linha-desc">${linha.descricao}</p>
+    `;
+
+    container.appendChild(div);
+  });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Já existe esse evento, então vamos *complementar* com filtros
+  const campoLinha = document.getElementById("filtro-linha");
+  const campoRegiao = document.getElementById("filtro-regiao");
+  const campoTerminal = document.getElementById("filtro-terminal");
+
+  if (campoLinha && campoRegiao && campoTerminal) {
+    function atualizarFiltro() {
+      const buscaLinha = campoLinha.value;
+      const buscaRegiao = campoRegiao.value;
+      const buscaTerminal = campoTerminal.value;
+
+      const resultados = filtrarLinhas(buscaLinha, buscaRegiao, buscaTerminal);
+      renderizarLinhas(resultados);
+    }
+
+    campoLinha.addEventListener("input", atualizarFiltro);
+    campoRegiao.addEventListener("input", atualizarFiltro);
+    campoTerminal.addEventListener("input", atualizarFiltro);
+
+    renderizarLinhas(linhasOnibus); // Inicializa com todos os dados
+  }
+});
+
